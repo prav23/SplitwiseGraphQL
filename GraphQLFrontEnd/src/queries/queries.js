@@ -1,120 +1,89 @@
 import { gql } from 'apollo-boost';
 
-const getRestaurantQuery = gql`
-    query($restaurant_id: String){
-        restaurant(restaurant_id: $restaurant_id) {
+const getUserQuery = gql`
+    query($user_id: String){
+        user(user_id: $user_id) {
             name
-            email_id
-            location
-            delivery_method
-            phone
+            email
+        }
+    }
+`;
+
+const getUsersQuery = gql`
+    query(){
+        users() {
+            name
+            email
+        }
+    }
+`;
+
+const getUserProfileQuery = gql`
+    query($user_id: String){
+        profile(user_id: $user_id) {
+            user
+            image
+            phonenumber
+            currency
+            language
+            timezone
+        }
+    }
+`;
+
+const getGroupQuery = gql`
+    query($group_name: String){
+        group(group_name: $group_name) {
+            group_name
+            group_image
+        }
+    }
+`;
+
+const getGroupsQuery = gql`
+    query(){
+        groups() {
+            group_name
+            group_image
+        }
+    }
+`;
+
+const getExpenseQuery = gql`
+    query($group: String){
+        expense(group: $group) {
+            user
+            group
+            amount
             description
-            timings
-            cuisine
+            expense_date
         }
     }
 `;
 
-const getCustomerQuery = gql`
-    query($customer_id: String){
-        customer(customer_id: $customer_id) {
-            name
-            email_id
-            phone
-            dob
-            city
-            state
-            country
-            nick_name
-            about
-            join_date
-            favourite_restaurant
-            favourite_hobby
-            blog_url
-        }
-    }
-`;
-
-const getRestaurantsQuery = gql`
-    query($input: String){
-        restaurants(input: $input) {
-            id
-            name
-            email_id
-            location
-            password
-            delivery_method
-            phone
+const getExpensesQuery = gql`
+    query(){
+        expenses() {
+            user
+            group
+            amount
             description
-            timings
-            cuisine
-            rest_dishes {
-                id
-                name
-                ingredients
-                price
-                category
-                description
-            }
-            reviews {
-                rating
-                review
-                create_time
-            }
+            expense_date
         }
     }
 `;
 
-const getCustomerOrdersQuery = gql`
-    query($customer_id: String){
-        customerOrders(customer_id: $customer_id) {
+const getUserGroupsQuery = gql`
+    query($group: String){
+        usergroups(group: $group) {
+            user
+            group
             status
-            create_time
-            delivery_method
-            dish_name
-            quantity
-            restaurant_name
+            total_spent
+            total_owed
         }
     }
 `;
-
-const getReviewsQuery = gql`
-    query($restaurant_id: String){
-        reviews(restaurant_id: $restaurant_id) {
-            rating
-            review
-            create_time
-        }
-    }
-`;
-
-const getRestaurantOrdersQuery = gql`
-query($restaurant_id: String){
-    restaurantOrders(restaurant_id: $restaurant_id) {
-        status
-        create_time
-        delivery_method
-        dish_name
-        quantity
-        customer_id
-        id
-    }
-}
-`;
-
-const getRestaurantMenuQuery = gql`
-query($restaurant_id: String){
-    menu(restaurant_id: $restaurant_id) {
-        name
-        id
-        ingredients
-        description
-        price
-        category
-    }
-}
-`;
-
-export { getRestaurantQuery, getCustomerQuery, getRestaurantsQuery,
-    getCustomerOrdersQuery, getReviewsQuery, getRestaurantOrdersQuery,
-    getRestaurantMenuQuery};
+export { getUserQuery, getUsersQuery, getUserProfileQuery,
+    getGroupQuery, getGroupsQuery, getExpenseQuery,
+    getExpensesQuery, getUserGroupsQuery};
