@@ -16,12 +16,18 @@ class App extends Component {
   render() {
     return (
       //Use Browser Router to route to different pages
-      <BrowserRouter>
+      // <BrowserRouter>
+      //   <div>
+      //     {/* App Component Has a Child Component called Main*/}
+      //     <Main/>
+      //   </div>
+      // </BrowserRouter>
+      <ApolloProvider client={client}>
         <div>
           {/* App Component Has a Child Component called Main*/}
           <Main/>
         </div>
-      </BrowserRouter>
+      </ApolloProvider>
     );
   }
 }
