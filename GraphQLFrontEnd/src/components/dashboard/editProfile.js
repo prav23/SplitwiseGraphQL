@@ -1,50 +1,53 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import TextFieldGroup from '../common/TextFieldGroup';
 import SelectListGroup from '../common/SelectListGroup';
-import { updateProfile} from '../../actions/dashboardActions';
+import { updateProfileMutation } from "../../mutation/mutations";
+import { graphql } from 'react-apollo';
 
 class EditProfile extends Component {
   constructor(props) {
     super(props);
-    const { profile } = this.props.dashboard;
     this.state = {
-      image: profile.data.image ,
-      phoneNumber: profile.data.phoneNumber,
-      currency: profile.data.currency,
-      language: profile.data.language,
-      timezone: profile.data.timezone,
+      image:'',
+      phoneNumber: '',
+      currency: '',
+      language: '',
+      timezone: '',
       errors: {},
       file: null,
-      base64URL: ""
+      base64URL: "",
+      user_id: "",
     };
-
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({ errors: nextProps.errors });
-    }
   }
 
   onSubmit(e) {
     e.preventDefault();
-    
-    const profileData = {
-      user_id: this.props.auth.user.user_id,
-      image: this.state.base64URL,
-      phoneNumber: this.state.phoneNumber,
-      currency: this.state.currency,
-      language: this.state.language,
-      timezone: this.state.timezone
-    };
-    console.log(profileData);
-    this.props.updateProfile(profileData, this.props.history);
+    this.props.updateProfileMutation({
+      variables: {
+        user: localStorage.getItem('user_id'),
+        image: this.state.base64URL,
+        phoneNumber: this.state.phoneNumber,
+        currency: this.state.currency,
+        language: this.state.language,
+        timezone: this.state.timezone
+      }
+    }).then(mutationResponse => {
+      let response = mutationResponse.data.updateProfile;
+      if (response) {
+        if (response.status === "200") {
+            this.setState({
+                success: true,
+                data: response.message,
+            });
+        } else {
+            this.setState({
+                message: response.message,
+            });
+        }
+      }
+    });
   }
 
   onChange(e) {
@@ -98,7 +101,7 @@ class EditProfile extends Component {
   };
 
   render() {
-    const { isAuthenticated } = this.props.auth;
+    //const { isAuthenticated } = this.props.auth;
     const { errors } = this.state;
     
     const currencyOptions = [
@@ -129,7 +132,7 @@ class EditProfile extends Component {
     ];
 
     return (
-      isAuthenticated && <div className="edit-profile">
+      <div className="edit-profile">
         <div className="container">
           <div className="row">
             <div className="col-md-5 m-auto">
@@ -193,16 +196,4 @@ class EditProfile extends Component {
 }
 
 
-EditProfile.propTypes = {
-  auth: PropTypes.object.isRequired,
-  dashboard: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  dashboard: state.dashboard,
-  errors: state.errors
-});
-
-export default connect(mapStateToProps,{ updateProfile })(withRouter(EditProfile));
+export default graphql(updateProfileMutation, { name: "updateProfileMutation" })(EditProfile);

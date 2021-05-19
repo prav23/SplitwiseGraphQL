@@ -50,15 +50,15 @@ class Navbar extends Component {
                       <li><Link class="nav-link" to="/" onClick = {this.handleLogout}>
                         Logout
                       </Link></li>
-                      {/* {!isProfile && <li><Link class="nav-link" to="/createprofile">
+                      <li><Link class="nav-link" to="/createprofile">
                         Create Profile
-                      </Link></li>}
-                      {isProfile && <li><Link class="nav-link" to="/editprofile">
+                      </Link></li>
+                      <li><Link class="nav-link" to="/editprofile">
                         Edit Profile
-                      </Link></li>}
+                      </Link></li>
                       <li><Link class="nav-link" to="/creategroup">
                         Create Group
-                      </Link></li> */}
+                      </Link></li>
                       {/* <li><Link class="nav-link" to="/groupActivity">
                         Group
                       </Link></li> */}

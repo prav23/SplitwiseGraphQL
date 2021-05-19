@@ -11,9 +11,9 @@ import Dashboard from "./dashboard/dashboard";
 // import Activity from "./expense/recentActivity";
 // import MyGroups from "./groups/myGroups";
 
-// import CreateProfile from "./dashboard/createProfile";
-// import EditProfile from "./dashboard/editProfile";
-// import CreateGroup from "./groups/createGroup";
+import CreateProfile from "./dashboard/createProfile";
+import EditProfile from "./dashboard/editProfile";
+import CreateGroup from "./groups/createGroup";
 // import EditGroup from "./groups/editGroup";
 // import GroupActivity from "./groups/groupActivity";
 
@@ -35,12 +35,12 @@ class Main extends Component {
                     <Route path="/login" component={Login} />
 
                     <Route path="/dashboard" component={Dashboard} />
+                    <Route path="/creategroup" component={CreateGroup} />
+                    <Route path="/createprofile" component={CreateProfile} />
+                    <Route path="/editprofile" component={EditProfile} />
                     {/* <Route path="/activity" component={Activity} />
                     <Route path="/mygroups" component={MyGroups} />
 
-                    <Route path="/createprofile" component={CreateProfile} />
-                    <Route path="/editprofile" component={EditProfile} />
-                    <Route path="/creategroup" component={CreateGroup} />
                     <Route path="/groupActivity/:groupId" component={GroupActivity} />
                     <Route path="/editgroup/:groupId" component={EditGroup} /> */}
                     

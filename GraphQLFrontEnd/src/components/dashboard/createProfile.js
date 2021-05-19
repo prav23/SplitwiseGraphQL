@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import TextFieldGroup from '../common/TextFieldGroup';
 import SelectListGroup from '../common/SelectListGroup';
-import { createProfile} from '../../actions/dashboardActions';
+import { createProfileMutation } from "../../mutation/mutations";
+import { graphql } from 'react-apollo';
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -18,7 +16,8 @@ class CreateProfile extends Component {
       timezone: '',
       errors: {},
       file: null,
-      base64URL: ""
+      base64URL: "",
+      user_id: "",
     };
 
     this.onChange = this.onChange.bind(this);
@@ -26,25 +25,39 @@ class CreateProfile extends Component {
     
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({ errors: nextProps.errors });
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.errors) {
+  //     this.setState({ errors: nextProps.errors });
+  //   }
+  // }
 
   onSubmit(e) {
     e.preventDefault();
-    
-    const profileData = {
-      user_id: this.props.auth.user.user_id,
-      image: this.state.base64URL,
-      phoneNumber: this.state.phoneNumber,
-      currency: this.state.currency,
-      language: this.state.language,
-      timezone: this.state.timezone
-    };
-    console.log(profileData);
-    this.props.createProfile(profileData, this.props.history);
+    this.props.createProfileMutation({
+      variables: {
+        user: localStorage.getItem('user_id'),
+        image: this.state.base64URL,
+        phoneNumber: this.state.phoneNumber,
+        currency: this.state.currency,
+        language: this.state.language,
+        timezone: this.state.timezone
+      }
+    }).then(mutationResponse => {
+      let response = mutationResponse.data.createProfile;
+      if (response) {
+        if (response.status === "200") {
+            this.setState({
+                success: true,
+                data: response.message,
+            });
+        } else {
+            this.setState({
+                message: response.message,
+            });
+        }
+      }
+    });
+
   }
 
   onChange(e) {
@@ -98,7 +111,7 @@ class CreateProfile extends Component {
   };
 
   render() {
-    const { isAuthenticated } = this.props.auth;
+    //const { isAuthenticated } = this.props.auth;
     const { errors } = this.state;
     
     const currencyOptions = [
@@ -129,7 +142,7 @@ class CreateProfile extends Component {
     ];
 
     return (
-      isAuthenticated && <div className="create-profile">
+      <div className="create-profile">
         <div className="container">
           <div className="row">
             <div className="col-md-5 m-auto">
@@ -196,15 +209,4 @@ class CreateProfile extends Component {
   }
 }
 
-
-CreateProfile.propTypes = {
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
-
-export default connect(mapStateToProps,{createProfile})(withRouter(CreateProfile));
+export default graphql(createProfileMutation, { name: "createProfileMutation" })(CreateProfile);

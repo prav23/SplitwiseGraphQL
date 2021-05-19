@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import TextFieldGroup from '../common/TextFieldGroup';
-import { createGroup} from '../../actions/groupsActions';
-
+import { createGroupMutation } from "../../mutation/mutations";
+import { graphql } from 'react-apollo';
 class CreateGroup extends Component {
   constructor(props) {
     super(props);
@@ -23,21 +20,34 @@ class CreateGroup extends Component {
     
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({ errors: nextProps.errors });
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.errors) {
+  //     this.setState({ errors: nextProps.errors });
+  //   }
+  // }
 
   onSubmit(e) {
     e.preventDefault();
-    const groupData = {
-      group_name: this.state.group_name,
-      group_image: this.state.base64URL,
-      user_id: this.props.auth.user.user_id,
-      new_friend_user_ids: this.state.user_ids
-    };
-    this.props.createGroup(groupData, this.props.history);
+    this.props.createGroupMutation({
+      variables: {
+        group_name: this.state.group_name,
+        group_image: this.state.base64URL,
+      }
+    }).then(mutationResponse => {
+      let response = mutationResponse.data.createGroup;
+      if (response) {
+        if (response.status === "200") {
+            this.setState({
+                success: true,
+                data: response.message,
+            });
+        } else {
+            this.setState({
+                message: response.message,
+            });
+        }
+      }
+    });
   }
 
   onChange(e) {
@@ -97,15 +107,15 @@ class CreateGroup extends Component {
   };
 
   render() {
-    const { isAuthenticated } = this.props.auth;
+    //const { isAuthenticated } = this.props.auth;
     const { errors } = this.state;
-    const { allUsers } = this.props.dashboard;
+    //const { allUsers } = this.props.dashboard;
     let allUserList = [];
-    if(allUsers){
-      allUserList = allUsers.data.allUsers;
-    }
+    // if(allUsers){
+    //   allUserList = allUsers.data.allUsers;
+    // }
     return (
-        isAuthenticated && <div className="create-group">
+        <div className="create-group">
         <div className="container">
           <div className="row">
             <div className="col-md-5 m-auto">
@@ -150,15 +160,4 @@ class CreateGroup extends Component {
   }
 }
 
-CreateGroup.propTypes = {
-    auth: PropTypes.object.isRequired,
-    errors: PropTypes.object.isRequired,
-    dashboard: PropTypes.object.isRequired,
-  };
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors,
-  dashboard: state.dashboard,
-});
-
-export default connect(mapStateToProps,{createGroup})(withRouter(CreateGroup));
+export default graphql(createGroupMutation, { name: "createGroupMutation" })(CreateGroup);

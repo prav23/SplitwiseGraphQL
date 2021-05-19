@@ -4,7 +4,7 @@ const updateProfile = async (args) => {
     let profile = await Profile.find({ user: args.user });
     if(profile){
         profile.image = args.image?args.image:profile.image;
-        profile.phonenumber = args.phonenumber?args.phonenumber:profile.phonenumber;
+        profile.phonenumber = args.phonenumber?Number(args.phonenumber):profile.phonenumber;
         profile.currency = args.currency?args.currency:profile.currency;
         profile.language = args.language?args.language:profile.language;
         profile.timezone = args.timezone?args.timezone:profile.timezone;
@@ -24,7 +24,7 @@ const createProfile = async (args) => {
     let newProfile = new Profile({
         user: args.user,
         image: args.image,
-        phonenumber: args.phonenumber,
+        phonenumber: 1111111,
         currency: args.currency,
         language: args.language,
         timezone: args.timezone,
